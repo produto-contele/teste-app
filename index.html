@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contele Teams - Nova área de Locais</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- É ESSENCIAL TER O MANIFESTO PARA O PWA FUNCIONAR -->
+    <!-- <link rel="manifest" href="/manifest.json"> -->
+
+    <style>
+        /* ... (TODO O SEU CSS EXISTENTE PERMANECE AQUI) ... */
+
+        :root {
+            --primary-blue: #1b5ed8;
+            --dark-bg: #222831;
+            --dark-hover: #31363f;
+            --text-gray: #64748b;
+            --bg-light: #f4f7fb;
+            --border-color: #e2e8f0;
+            --topbar-bg: #ffffff;
+            --line-color: #bfdbfe;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: #0f172a;
+            padding: 40px;
+            overflow-x: hidden;
+        }
+
+        /* --- LOGO CONTELE TEAMS --- */
+        .top-right-logo {
+            position: absolute;
+            top: 45px;
+            right: 60px;
+            height: 55px;
+            z-index: 100;
+        }
+
+        /* ... (Restante do seu CSS original) ... */
+
+        /* --- ESTILO DO BOTÃO DE INSTALAÇÃO (NOVO) --- */
+        .btn-instalar-pwa {
+            display: none; /* Escondido por padrão, só aparece se o navegador suportar */
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(27, 94, 216, 0.2);
+            transition: background-color 0.2s, transform 0.1s;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        .btn-instalar-pwa:hover {
+            background-color: #154bb0;
+            transform: translateY(-1px);
+        }
+        
+        .btn-instalar-pwa:active {
+            transform: translateY(1px);
+        }
+
+        .btn-instalar-pwa i {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <img src="https://i.ibb.co/BHjm6dp2/logo-teams-espelhado.png" alt="Contele Teams" class="top-right-logo">
+    <svg width="0" height="0" style="position:absolute"><defs>
+      <marker id="ah" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+        <path d="M0,0 L6,3 L0,6 Z" fill="#94a3b8" stroke="none"/></marker>
+    </defs></svg>
+
+    <section class="changelog-wrapper">
+      <div class="breadcrumb">— RELEASE NOTES • ATUALIZAÇÃO 24/08/2026</div>
+      
+      <!-- BOTÃO DE INSTALAÇÃO (NOVO) -->
+      <button id="btnInstalarApp" class="btn-instalar-pwa">
+        <i class="fa-solid fa-mobile-screen-button"></i> Instalar App na Tela Inicial
+      </button>
+
+      <div class="changelog-card">
+        <!-- ... (TODO O SEU CONTEÚDO HTML PERMANECE AQUI) ... -->
+        <div class="changelog-header"><h1>Nova área de <span>Locais!</span></h1></div>
+        <!-- ... -->
+      </div>
+      <div class="scroll-down">Veja as novidades tela a tela <i class="fa-solid fa-angle-down"></i></div>
+    </section>
+
+    <!-- ... (RESTANTE DO SEU HTML) ... -->
+
+    <!-- SCRIPT DE INSTALAÇÃO DO PWA (NOVO) -->
+    <script>
+        let deferredPrompt;
+        const btnInstalar = document.getElementById('btnInstalarApp');
+
+        // 1. Ouve o evento antes do prompt de instalação aparecer
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Previne o mini-infobar de aparecer no mobile
+            e.preventDefault();
+            // Guarda o evento para acioná-lo depois
+            deferredPrompt = e;
+            // Atualiza a UI para notificar o usuário que ele pode instalar o PWA
+            btnInstalar.style.display = 'inline-block';
+        });
+
+        // 2. Ação quando o botão é clicado
+        btnInstalar.addEventListener('click', async () => {
+            if (!deferredPrompt) {
+                return;
+            }
+            // Mostra o prompt de instalação
+            deferredPrompt.prompt();
+            
+            // Espera o usuário responder ao prompt
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`User response to the install prompt: ${outcome}`);
+            
+            // O deferredPrompt só pode ser usado uma vez
+            deferredPrompt = null;
+            // Esconde o botão após a ação
+            btnInstalar.style.display = 'none';
+        });
+
+        // 3. Opcional: Escuta se o app foi instalado com sucesso
+        window.addEventListener('appinstalled', () => {
+            // Esconde o botão se o app foi instalado (pode já estar escondido pelo click, 
+            // mas garante caso seja instalado por outro meio)
+            btnInstalar.style.display = 'none';
+            console.log('PWA foi instalado');
+        });
+    </script>
+</body>
+</html>
