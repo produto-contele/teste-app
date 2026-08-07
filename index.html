@@ -7,12 +7,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- É ESSENCIAL TER O MANIFESTO PARA O PWA FUNCIONAR -->
-    <!-- <link rel="manifest" href="/manifest.json"> -->
+    <!-- VÍNCULO DO MANIFESTO PWA -->
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#1b5ed8">
 
     <style>
-        /* ... (TODO O SEU CSS EXISTENTE PERMANECE AQUI) ... */
-
         :root {
             --primary-blue: #1b5ed8;
             --dark-bg: #222831;
@@ -34,6 +33,31 @@
             overflow-x: hidden;
         }
 
+        /* --- BOTÃO DE INSTALAÇÃO PWA --- */
+        .btn-pwa-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        #btnInstalarApp {
+            display: none; /* Escondido por padrão, aparece via JS quando elegível */
+            background-color: var(--primary-blue);
+            color: #ffffff;
+            border: none;
+            padding: 14px 28px;
+            font-size: 15px;
+            font-weight: 700;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(27, 94, 216, 0.35);
+            transition: all 0.2s ease;
+        }
+
+        #btnInstalarApp:hover {
+            background-color: #1449b0;
+            transform: translateY(-2px);
+        }
+
         /* --- LOGO CONTELE TEAMS --- */
         .top-right-logo {
             position: absolute;
@@ -43,104 +67,427 @@
             z-index: 100;
         }
 
-        /* ... (Restante do seu CSS original) ... */
+        /* --- SEÇÃO DE CHANGELOG --- */
+        .changelog-wrapper {
+            max-width: 1100px;
+            margin: 20px auto 90px;
+            position: relative;
+        }
 
-        /* --- ESTILO DO BOTÃO DE INSTALAÇÃO (NOVO) --- */
-        .btn-instalar-pwa {
-            display: none; /* Escondido por padrão, só aparece se o navegador suportar */
-            background-color: var(--primary-blue);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(27, 94, 216, 0.2);
-            transition: background-color 0.2s, transform 0.1s;
-            margin-top: 15px;
+        .changelog-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 60px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+            border: 1px solid var(--border-color);
+        }
+
+        .changelog-header h1 {
+            font-size: 42px;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 20px;
+            letter-spacing: -1.2px;
+        }
+
+        .changelog-header h1 span { color: var(--primary-blue); }
+
+        .changelog-intro {
+            font-size: 17px;
+            color: #475569;
+            line-height: 1.7;
+            margin-bottom: 50px;
+        }
+
+        .changelog-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .changelog-box h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .changelog-box h3 i { color: var(--primary-blue); }
+
+        .changelog-list { list-style: none; }
+
+        .changelog-list li {
+            position: relative;
+            padding-left: 28px;
+            margin-bottom: 16px;
+            font-size: 15px;
+            color: #334155;
+            line-height: 1.6;
+        }
+
+        .changelog-list li strong { color: #0f172a; font-weight: 700; }
+
+        .list-check li::before { content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; left: 0; top: 2px; color: #10b981; font-size: 14px; }
+        .list-arrow li::before { content: '\f061'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; left: 0; top: 2px; color: var(--primary-blue); font-size: 14px; }
+        .list-tool li::before { content: '\f013'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; left: 0; top: 2px; color: #f59e0b; font-size: 14px; }
+        .list-chart li::before { content: '\f080'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; left: 0; top: 2px; color: #8b5cf6; font-size: 14px; }
+
+        .changelog-list li.destaque {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 10px;
+            padding: 12px 14px 12px 42px;
+            margin-bottom: 18px;
+        }
+        .changelog-list li.destaque::before {
+            content: '\f005';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: #f59e0b;
+            left: 16px;
+            top: 14px;
+            font-size: 15px;
+        }
+        .changelog-list li.destaque strong { color: #92400e; }
+
+        .pair-box { grid-column: 1 / -1; }
+        .pair-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 40px; }
+        .pair-grid > h3 {
+            font-size: 18px; font-weight: 700; color: #1e293b;
+            margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+            padding-bottom: 15px; border-bottom: 1px solid var(--border-color);
+        }
+        .pair-grid > h3 i { color: var(--primary-blue); }
+        .pair-grid .pi {
+            position: relative; padding-left: 28px; margin: 0 0 16px;
+            font-size: 15px; color: #334155; line-height: 1.6;
+        }
+        .pair-grid .pi strong { color: #0f172a; font-weight: 700; }
+        .pair-grid .pi.nov::before { content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; left: 0; top: 2px; color: #10b981; font-size: 14px; }
+        .pair-grid .pi.exe::before { content: '\f080'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; left: 0; top: 2px; color: #8b5cf6; font-size: 14px; }
+        .pair-grid .pi.destaque { background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 12px 14px 12px 42px; margin-bottom: 18px; }
+        .pair-grid .pi.destaque::before { content: '\f005'; font-family: 'Font Awesome 6 Free'; font-weight: 900; color: #f59e0b; left: 16px; top: 14px; font-size: 15px; }
+        .pair-grid .pi.destaque strong { color: #92400e; }
+        .pair-grid .pi.empty { margin: 0; padding: 0; }
+        .pair-grid .pi.empty::before { content: none; }
+
+        .c-star { border-top: 3px solid #f59e0b; }
+        .c-star .callout-tag { background: #fffbeb; color: #b45309; }
+
+        .breadcrumb {
+            color: var(--primary-blue);
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
             margin-bottom: 15px;
+            display: flex;
+            align-items: center;
         }
 
-        .btn-instalar-pwa:hover {
-            background-color: #154bb0;
-            transform: translateY(-1px);
-        }
-        
-        .btn-instalar-pwa:active {
-            transform: translateY(1px);
+        .scroll-down {
+            text-align: center;
+            margin-top: 60px;
+            color: #64748b;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
-        .btn-instalar-pwa i {
-            margin-right: 8px;
+        .scroll-down i {
+            display: block;
+            margin-top: 15px;
+            font-size: 24px;
+            color: var(--primary-blue);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .section-divider {
+            width: 100px;
+            height: 4px;
+            background: #e2e8f0;
+            margin: 70px auto;
+            border-radius: 4px;
+        }
+
+        .screens-wrapper { max-width: 1500px; margin: 0 auto 60px; }
+        .screen-block { margin-bottom: 90px; }
+        .screen-head { max-width: 1100px; margin: 0 auto 34px; }
+
+        .screen-index {
+            color: var(--primary-blue);
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .repag-tag {
+            background: #f5f3ff;
+            color: #7c3aed;
+            border: 1px solid #ddd6fe;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 11px;
+            border-radius: 20px;
+            text-transform: none;
+            letter-spacing: 0;
+            display: inline-flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .new-mod-tag {
+            background: #eff6ff;
+            color: var(--primary-blue);
+            border: 1px solid #bfdbfe;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 11px;
+            border-radius: 20px;
+            display: inline-flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .screen-head h2 {
+            font-size: 34px;
+            font-weight: 800;
+            color: #111827;
+            letter-spacing: -1px;
+            margin-bottom: 12px;
+        }
+        .screen-head h2 span { color: var(--primary-blue); }
+
+        .screen-head p {
+            font-size: 16px;
+            color: #475569;
+            line-height: 1.6;
+            max-width: 840px;
+        }
+
+        .stage {
+            position: relative;
+            width: 100%;
+            max-width: 1500px;
+            margin: 0 auto;
+            aspect-ratio: 1500 / var(--sh, 653);
+        }
+
+        .stage-img {
+            position: absolute;
+            left: 16.667%;
+            width: 66.667%;
+            top: calc(40 / var(--sh, 653) * 100%);
+            height: calc(var(--ih, 573) / var(--sh, 653) * 100%);
+            border-radius: 10px;
+            box-shadow: 0 12px 40px rgba(15, 23, 42, 0.14);
+            border: 1px solid var(--border-color);
+            object-fit: fill;
+        }
+
+        .stage-svg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 6;
+        }
+        .stage-svg path { fill: none; stroke: #94a3b8; stroke-width: 2.5; opacity: 0.9; }
+
+        .callout {
+            position: absolute;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px 16px;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.10);
+            z-index: 7;
+        }
+        .callout p { font-size: 12.5px; line-height: 1.5; color: #334155; margin: 0; }
+        .callout p strong { color: #0f172a; font-weight: 700; }
+
+        .callout-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 9.5px;
+            font-weight: 800;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .c-new { border-top: 3px solid var(--primary-blue); }
+        .c-new .callout-tag { background: #eff6ff; color: var(--primary-blue); }
+
+        .c-soon { border-top: 3px solid #f59e0b; }
+        .c-soon .callout-tag { background: #fff7ed; color: #d97706; }
+
+        .star-tag {
+            background: #fffbeb;
+            color: #b45309;
+            border: 1px solid #fde68a;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 11px;
+            border-radius: 20px;
+            display: inline-flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        @media (max-width: 1200px) {
+            .changelog-grid { grid-template-columns: 1fr; }
+            .pair-grid { grid-template-columns: 1fr; }
+            body { padding: 20px; }
+            .changelog-card { padding: 35px; }
         }
     </style>
 </head>
 <body>
     <img src="https://i.ibb.co/BHjm6dp2/logo-teams-espelhado.png" alt="Contele Teams" class="top-right-logo">
-    <svg width="0" height="0" style="position:absolute"><defs>
-      <marker id="ah" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
-        <path d="M0,0 L6,3 L0,6 Z" fill="#94a3b8" stroke="none"/></marker>
-    </defs></svg>
 
     <section class="changelog-wrapper">
       <div class="breadcrumb">— RELEASE NOTES • ATUALIZAÇÃO 24/08/2026</div>
-      
-      <!-- BOTÃO DE INSTALAÇÃO (NOVO) -->
-      <button id="btnInstalarApp" class="btn-instalar-pwa">
-        <i class="fa-solid fa-mobile-screen-button"></i> Instalar App na Tela Inicial
-      </button>
+
+      <!-- CONTAINER DO BOTÃO PWA -->
+      <div class="btn-pwa-container">
+        <button id="btnInstalarApp">
+            <i class="fa-solid fa-mobile-screen-button"></i> Instalar App na Tela Inicial
+        </button>
+      </div>
 
       <div class="changelog-card">
-        <!-- ... (TODO O SEU CONTEÚDO HTML PERMANECE AQUI) ... -->
         <div class="changelog-header"><h1>Nova área de <span>Locais!</span></h1></div>
-        <!-- ... -->
+        <p class="changelog-intro">Chegou a nova área de <strong>Locais</strong> do Contele Teams Web — repensada do zero para ficar mais organizada, mais visual e mais rápida no dia a dia. O módulo reúne <strong>Locais</strong>, <strong>Grupo de Locais</strong>, <strong>Eventos</strong> e a nova <strong>página de cadastro/edição de local</strong> em um só lugar. E a maior novidade: agora você monta cada local do seu jeito com <strong>seções e campos personalizados</strong>.</p>
+        
+        <div class="changelog-grid">
+          <div class="pair-box"><div class="pair-grid">
+            <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Novidades e Melhorias</h3>
+            <h3><i class="fa-solid fa-chart-line"></i> Exemplos de uso</h3>
+
+            <div class="pi nov destaque"><strong><i class="fa-solid fa-star" style="color:#f59e0b;"></i> Seções e campos personalizados.</strong> A maior novidade: crie abas próprias no local com campos de texto, data, arquivo e até assinatura.</div>
+            <div class="pi exe destaque"><strong>Montar o local do seu jeito:</strong> adicione uma seção, escolha os campos e capture assinatura direto no cadastro.</div>
+
+            <div class="pi nov"><strong>Novo módulo de Grupo de Locais.</strong> Agrupe vários locais e gerencie categoria, carteira e etiquetas por grupo.</div>
+            <div class="pi exe"><strong>Montar um grupo:</strong> crie o grupo, dê um nome, selecione os locais e defina as classificações.</div>
+
+            <div class="pi nov"><strong>Novo histórico de Eventos.</strong> Uma linha do tempo mostra quem fez o quê e quando, com filtros por usuário e período.</div>
+            <div class="pi exe"><strong>Descobrir o que mudou:</strong> abra Eventos, filtre por usuário e período e veja o histórico.</div>
+
+            <div class="pi nov"><strong>Nova página do local, em abas.</strong> Cada local tem uma página completa (Dados e Histórico de visitas).</div>
+            <div class="pi exe"><strong>Atualizar um local:</strong> abra pela seta (›) na lista e clique em Editar.</div>
+
+            <div class="pi nov"><strong>Geoposicionamento no mapa.</strong> Veja o local no mapa, com Setor, Ambiente e Responsável.</div>
+            <div class="pi exe"><strong>Localizar no mapa:</strong> confira o endereço geoposicionado na página do local.</div>
+
+            <div class="pi nov"><strong>Também no App.</strong> O local completo — com geoposicionamento e seções personalizadas — também aparece no aplicativo.</div>
+            <div class="pi exe"><strong>Consultar em campo:</strong> o vendedor abre o local no App e inicia uma nova visita ali mesmo.</div>
+
+            <div class="pi nov"><strong>Tipos de local.</strong> Cada local é classificado como Cliente ou Fornecedor, direto na lista.</div>
+            <div class="pi exe"><strong>Separar clientes de fornecedores:</strong> marque o tipo e filtre por ele.</div>
+
+            <div class="pi nov"><strong>Ativos e Arquivados separados.</strong> Veja à parte os locais arquivados, sem misturar com os ativos.</div>
+            <div class="pi exe"><strong>Arquivar quem saiu:</strong> mantenha a lista de Ativos limpa.</div>
+
+            <div class="pi nov"><strong>Ações em massa.</strong> Selecione vários locais e aplique ações em lote.</div>
+            <div class="pi exe"><strong>Ajustar vários de uma vez:</strong> selecione um grupo de locais e aplique a ação.</div>
+
+            <div class="pi nov"><strong>Importar locais.</strong> Cadastre vários locais de uma vez pela importação.</div>
+            <div class="pi exe"><strong>Cadastrar em lote:</strong> importe sua base de clientes e fornecedores.</div>
+
+            <div class="pi nov"><strong>Novas colunas.</strong> Tipo, Última visita, Data de criação, Endereço e Categoria — você escolhe quais exibir.</div>
+            <div class="pi exe"><strong>Ver só o que importa:</strong> personalize as colunas da lista.</div>
+
+            <div class="pi nov"><strong>Endereço mais completo.</strong> Cada local mostra Setor e Ambiente.</div>
+            <div class="pi exe"><strong>Chegar no lugar certo:</strong> registre 3º andar, auditório etc.</div>
+
+            <div class="pi nov"><strong>Visual totalmente repaginado.</strong> Todo o módulo redesenhado no novo padrão visual.</div>
+            <div class="pi exe empty"></div>
+          </div></div>
+
+          <div class="changelog-box">
+            <h3><i class="fa-solid fa-toolbox"></i> Bom saber</h3>
+            <ul class="changelog-list list-tool">
+              <li><strong>Seções personalizadas:</strong> crie abas próprias no perfil do local com campos de texto, data, arquivo e assinatura.</li>
+              <li><strong>Contato prático:</strong> telefone e e-mail têm botão de copiar, e o telefone pode aparecer verificado.</li>
+              <li><strong>Cadastro de grupo:</strong> informe ao menos um nome; a foto (mín. 400×400px) e as etiquetas são opcionais.</li>
+              <li><strong>Eventos:</strong> a linha do tempo agrupa as ações por dia (Hoje, Ontem e datas anteriores).</li>
+              <li><strong>Contagem de locais e grupos</strong> sempre visível.</li>
+              <li><strong>Importação por planilha:</strong> use o botão Importar para trazer sua base de uma vez.</li>
+            </ul>
+          </div>
+
+          <div class="changelog-box">
+            <h3><i class="fa-solid fa-compass"></i> O que você encontra em cada área</h3>
+            <ul class="changelog-list list-arrow">
+              <li><strong>Locais:</strong> lista principal, com busca, filtros, tipos, colunas personalizáveis e ações em massa.</li>
+              <li><strong>Grupo de Locais:</strong> agrupe locais e gerencie categoria, carteira e etiquetas por grupo.</li>
+              <li><strong>Eventos:</strong> histórico de ações, por dia, com filtros por usuário e período.</li>
+              <li><strong>Cadastro / Edição de local:</strong> página em abas, com geoposicionamento e seções personalizáveis.</li>
+            </ul>
+            <p style="font-size:12px;color:#94a3b8;margin-top:6px;">* Detalhamos cada área nas telas abaixo.</p>
+          </div>
+        </div>
       </div>
       <div class="scroll-down">Veja as novidades tela a tela <i class="fa-solid fa-angle-down"></i></div>
     </section>
 
-    <!-- ... (RESTANTE DO SEU HTML) ... -->
-
-    <!-- SCRIPT DE INSTALAÇÃO DO PWA (NOVO) -->
+    <!-- SCRIPT PWA PARA MANIPULAR O BOTÃO -->
     <script>
         let deferredPrompt;
         const btnInstalar = document.getElementById('btnInstalarApp');
 
-        // 1. Ouve o evento antes do prompt de instalação aparecer
+        // Registrar Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('SW Registrado!', reg))
+                    .catch(err => console.error('Erro no SW:', err));
+            });
+        }
+
+        // Intercepta evento de instalação do navegador
         window.addEventListener('beforeinstallprompt', (e) => {
-            // Previne o mini-infobar de aparecer no mobile
             e.preventDefault();
-            // Guarda o evento para acioná-lo depois
             deferredPrompt = e;
-            // Atualiza a UI para notificar o usuário que ele pode instalar o PWA
             btnInstalar.style.display = 'inline-block';
         });
 
-        // 2. Ação quando o botão é clicado
+        // Clique no botão
         btnInstalar.addEventListener('click', async () => {
-            if (!deferredPrompt) {
-                return;
-            }
-            // Mostra o prompt de instalação
-            deferredPrompt.prompt();
-            
-            // Espera o usuário responder ao prompt
-            const { outcome } = await deferredPrompt.userChoice;
-            console.log(`User response to the install prompt: ${outcome}`);
-            
-            // O deferredPrompt só pode ser usado uma vez
-            deferredPrompt = null;
-            // Esconde o botão após a ação
+            if (!deferredPrompt) return;
             btnInstalar.style.display = 'none';
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`Resultado da instalacao: ${outcome}`);
+            deferredPrompt = null;
         });
 
-        // 3. Opcional: Escuta se o app foi instalado com sucesso
         window.addEventListener('appinstalled', () => {
-            // Esconde o botão se o app foi instalado (pode já estar escondido pelo click, 
-            // mas garante caso seja instalado por outro meio)
             btnInstalar.style.display = 'none';
-            console.log('PWA foi instalado');
+            deferredPrompt = null;
         });
     </script>
 </body>
