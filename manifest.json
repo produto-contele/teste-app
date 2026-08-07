@@ -1,20 +1,20 @@
 {
-  "name": "Meu Aplicativo PWA",
-  "short_name": "MeuPWA",
+  "name": "Contele Teams - Locais",
+  "short_name": "Contele",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#007bff",
+  "background_color": "#f4f7fb",
+  "theme_color": "#1b5ed8",
   "icons": [
     {
-      "src": "https://via.placeholder.com/192",
+      "src": "./images (45).jpeg",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/jpeg"
     },
     {
-      "src": "https://via.placeholder.com/512",
+      "src": "./images (45).jpeg",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/jpeg"
     }
   ]
 }
